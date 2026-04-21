@@ -56,7 +56,7 @@ trainer = DPOTrainer(
     ref_model=ref_model,
     args=dpo_config,
     train_dataset=dataset,
-    tokenizer=tokenizer
+     processing_class=tokenizer
 )
 
 trainer.train()
