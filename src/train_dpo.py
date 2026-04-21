@@ -30,14 +30,16 @@ model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     config=config,
     device_map="auto",
-    trust_remote_code=True,
+     torch_dtype=torch.float16,
+    trust_remote_code=True
 )
 
 ref_model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     config=config,
     device_map="auto",
-    trust_remote_code=True,
+    torch_dtype=torch.float16,
+    trust_remote_code=True
 )
 model.config.pad_token_id = tokenizer.pad_token_id
 ref_model.config.pad_token_id = tokenizer.pad_token_id
