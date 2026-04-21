@@ -19,6 +19,11 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 tokenizer.pad_token = tokenizer.eos_token
 
+config = AutoConfig.from_pretrained(
+    MODEL_NAME,
+    trust_remote_code=True
+)
+
 config.pad_token_id = tokenizer.eos_token_id
 
 model = AutoModelForCausalLM.from_pretrained(
