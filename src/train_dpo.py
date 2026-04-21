@@ -21,6 +21,7 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 tokenizer.pad_token = tokenizer.eos_token
 
+
 # MODELOS
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
@@ -33,6 +34,8 @@ ref_model = AutoModelForCausalLM.from_pretrained(
     device_map="auto",
     trust_remote_code=True
 )
+model.config.pad_token_id = tokenizer.pad_token_id
+ref_model.config.pad_token_id = tokenizer.pad_token_id
 
 # TREINAMENTO DPO
 training_args = TrainingArguments(
