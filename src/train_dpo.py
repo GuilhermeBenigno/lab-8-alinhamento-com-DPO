@@ -1,7 +1,7 @@
 import json
 import torch
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, TrainingArguments
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, TrainingArguments, BitsAndBytesConfig
 from trl import DPOTrainer, DPOConfig
 from config import *
 
@@ -26,19 +26,24 @@ config = AutoConfig.from_pretrained(
 
 config.pad_token_id = tokenizer.eos_token_id
 
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_quant_type="nf4"
+)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     config=config,
+    quantization_config=bnb_config,
     device_map="auto",
-     torch_dtype=torch.float16,
     trust_remote_code=True
 )
 
 ref_model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     config=config,
+    quantization_config=bnb_config,
     device_map="auto",
-    torch_dtype=torch.float16,
     trust_remote_code=True
 )
 model.config.pad_token_id = tokenizer.pad_token_id
