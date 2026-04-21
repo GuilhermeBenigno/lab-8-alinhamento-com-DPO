@@ -26,13 +26,15 @@ tokenizer.pad_token = tokenizer.eos_token
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     device_map="auto",
-    trust_remote_code=True
+    trust_remote_code=True,
+    pad_token_id=tokenizer.eos_token_id
 )
 
 ref_model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
     device_map="auto",
-    trust_remote_code=True
+    trust_remote_code=True,
+    pad_token_id=tokenizer.eos_token_id
 )
 model.config.pad_token_id = tokenizer.pad_token_id
 ref_model.config.pad_token_id = tokenizer.pad_token_id
