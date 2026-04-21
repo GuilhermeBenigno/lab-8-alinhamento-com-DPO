@@ -13,6 +13,9 @@ with open("data/dataset_dpo.jsonl", "r") as f:
 
 dataset = Dataset.from_list(data)
 
+#  REDUZIR DATASET (pra evitar estouro de memória)
+dataset = dataset.select(range(10))
+
 tokenizer = AutoTokenizer.from_pretrained(
     MODEL_NAME,
     trust_remote_code=True
