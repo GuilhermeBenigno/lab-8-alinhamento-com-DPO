@@ -1,11 +1,10 @@
 import json
 import torch
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments
+from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig
 from trl import DPOTrainer
 from config import *
 
-# DATASET
 data = []
 
 with open("data/dataset_dpo.jsonl", "r") as f:
@@ -14,27 +13,26 @@ with open("data/dataset_dpo.jsonl", "r") as f:
 
 dataset = Dataset.from_list(data)
 
-# TOKENIZER
 tokenizer = AutoTokenizer.from_pretrained(
     MODEL_NAME,
     trust_remote_code=True
 )
 tokenizer.pad_token = tokenizer.eos_token
 
+config.pad_token_id = tokenizer.eos_token_id
 
-# MODELOS
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
+    config=config,
     device_map="auto",
     trust_remote_code=True,
-    pad_token_id=tokenizer.eos_token_id
 )
 
 ref_model = AutoModelForCausalLM.from_pretrained(
     MODEL_NAME,
+    config=config,
     device_map="auto",
     trust_remote_code=True,
-    pad_token_id=tokenizer.eos_token_id
 )
 model.config.pad_token_id = tokenizer.pad_token_id
 ref_model.config.pad_token_id = tokenizer.pad_token_id
