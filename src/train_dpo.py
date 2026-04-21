@@ -4,6 +4,7 @@ from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoConfig, TrainingArguments, BitsAndBytesConfig
 from trl import DPOTrainer, DPOConfig
 from config import *
+from peft import LoraConfig, get_peft_model
 
 data = []
 
@@ -51,6 +52,22 @@ ref_model = AutoModelForCausalLM.from_pretrained(
 )
 model.config.pad_token_id = tokenizer.pad_token_id
 ref_model.config.pad_token_id = tokenizer.pad_token_id
+
+lora_config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.1,
+    bias="none",
+    task_type="CAUSAL_LM"
+)
+
+model = get_peft_model(model, lora_config)
+
+model.gradient_checkpointing_enable()
+
+model.config.use_cache = False
+ref_model.config.use_cache = False
 
 # TREINAMENTO DPO
 dpo_config = DPOConfig(
